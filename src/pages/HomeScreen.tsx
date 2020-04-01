@@ -1,156 +1,65 @@
-import React, { useEffect } from 'react';
-import Realm from 'realm';
-import { event, CalendarDetailsSchema, ThomasSchema } from './../Models';
-import { CalendarEvent } from './../types';
-import {
-    SafeAreaView,
-    StyleSheet,
-    ScrollView,
-    View,
-    Text,
-    StatusBar,
-    TouchableHighlight
-  } from 'react-native';
-import {
-    Header,
-    LearnMoreLinks,
-    Colors,
-    DebugInstructions,
-    ReloadInstructions,
-  } from 'react-native/Libraries/NewAppScreen';
-import { RealmContext } from "react-use-realm";  
+import React from 'react';
+import { Platform, Picker, StyleSheet, View, Text } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { useRealmQuery } from 'react-use-realm';
 
-declare var global: {HermesInternal: null | {}};
+import { Filter, IWorkspace } from './../types';
+import { WorkspaceSchema } from './../database';
+import TodosList from './../TodoList';
+import TodoForm from './../TodoForm';
 
+const filterDisplayNames: Record<Filter, string> = {
+    'all': 'All Tasks',
+    'done': 'Completed Tasks',
+    'not-done': 'Incomplete Tasks'
+};
 
-const HomeScreen = ({ navigation }) => {
+const Workspace = ({ workspace, filter }: { workspace: IWorkspace, filter: Filter }) => (
+  <View style={styles.workspace}>
+    <Text style={styles.workspaceHeader}>{workspace.title}</Text>
+    <TodosList workspace={workspace} filter={filter} />
+    <TodoForm workspace={workspace} />
+  </View>
+  );
 
-  const { realm, setRealm } = React.useContext(RealmContext)
- 
-  const initRealm = () => {
-    try {
-      const realm = new Realm({ schema: [ThomasSchema] });
-      setRealm(realm);
-      console.log('Realm initialised')
-    } catch (e) {
-      console.log('Error on db initialisation', e)
-    }
-  }
-
-  const addEvent = () => {
-    if (realm) {
-      realm.write(() => {
-        const thomas = {
-          name: 'Thomas Edwards'
-        }
-        realm.create(ThomasSchema.name, thomas);
-      });
-      
-    }
-
-    //  catch (e) {
-    //   console.log("Error on creation:", e)
-    // };
-  }
+export default function HomeScreen() {
+    const [filter, setFilter] = React.useState<Filter>('all');
+    
+    const workspaces = useRealmQuery<IWorkspace>({
+        source: WorkspaceSchema.name
+    });
 
 
-
-
-    return (
-        <>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
-            <ScrollView
-            contentInsetAdjustmentBehavior="automatic"
-            style={styles.scrollView}>
-            <Header />
-            {global.HermesInternal == null ? null : (
-                <View style={styles.engine}>
-                <Text style={styles.footer}>Engine: Hermes</Text>
-                </View>
-            )}
-            <View style={styles.body}>
-                <View style={styles.sectionContainer}>
-                  <TouchableHighlight onPress={() => initRealm()}>
-                    <Text style={styles.sectionTitle}>Create Realm</Text>
-                  </TouchableHighlight>
-                <Text style={styles.sectionDescription}>
-                    Edit <Text style={styles.highlight}>App.tsx</Text> to change
-                    this screen and then come back to see your edits.
-                </Text>
-                </View>
-                <View style={styles.sectionContainer}>
-                  <TouchableHighlight onPress={() => addEvent()}>
-                    <Text style={styles.sectionTitle}>Add Obj to Realm DBizzle</Text>
-
-                  </TouchableHighlight>
-                    <Text style={styles.sectionDescription}>
-                        <ReloadInstructions />
-                </Text>
-                </View>
-                <View style={styles.sectionContainer}>
-                  <TouchableHighlight onPress={() => navigation.navigate('EventDetails')}>
-                    <Text style={styles.sectionTitle}>Go to event</Text>
-                  </TouchableHighlight>
-                    <Text style={styles.sectionDescription}>
-                    <DebugInstructions />
-                </Text>
-                </View>
-                <View style={styles.sectionContainer}>
-                  <TouchableHighlight onPress={() => console.log(realm)}>
-                    <Text style={styles.sectionTitle}>Learn More</Text>
-
-                  </TouchableHighlight>
-                <Text style={styles.sectionDescription}>
-                    Read the docs to discover what to do next:
-                </Text>
-                </View>
-                <LearnMoreLinks />
-            </View>
-            </ScrollView>
-        </SafeAreaView>
-        </>
-    )
+    return <View style={styles.body}>
+        {Platform.OS === 'android' && 
+          <Picker 
+            mode="dropdown" 
+            selectedValue={filter} 
+            prompt={filterDisplayNames[filter]} 
+            style={{ height: 40, width: '100%', margin: 16 }} 
+            onValueChange={value => setFilter(value)}>
+            {Object.keys(filterDisplayNames).map(filter => <Picker.Item key={filter} value={filter} label={filterDisplayNames[filter as Filter]} />)}
+          </Picker>}
+          <TodoForm  />
+        {workspaces ?
+            workspaces.map(w => <Workspace key={w.id} workspace={w} filter={filter} />) 
+            : <Text>No workspaces added yet</Text>}
+    </View>
 }
 
-export default HomeScreen;
-
-
 const styles = StyleSheet.create({
-    scrollView: {
-      backgroundColor: Colors.lighter,
-    },
-    engine: {
-      position: 'absolute',
-      right: 0,
-    },
     body: {
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        flexDirection: 'column',
+        justifyContent: 'flex-start'
     },
-    sectionContainer: {
-      marginTop: 32,
-      paddingHorizontal: 24,
+    workspace: {
+        flexDirection: 'column',
+        justifyContent: 'flex-start'
     },
-    sectionTitle: {
-      fontSize: 24,
-      fontWeight: '600',
-      color: Colors.black,
-    },
-    sectionDescription: {
-      marginTop: 8,
-      fontSize: 18,
-      fontWeight: '400',
-      color: Colors.dark,
-    },
-    highlight: {
-      fontWeight: '700',
-    },
-    footer: {
-      color: Colors.dark,
-      fontSize: 12,
-      fontWeight: '600',
-      padding: 4,
-      paddingRight: 12,
-      textAlign: 'right',
-    },
-  });
+    workspaceHeader: {
+        marginHorizontal: 20,
+        paddingVertical: 8,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+    }
+});

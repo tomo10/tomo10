@@ -14,19 +14,22 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { RealmProvider } from "react-use-realm";
 
 import HomeScreen from './src/pages/HomeScreen';
+
 import EventDetailsScreen from './src/pages/EventDetailsScreen';
-import { realm } from './src/my-realm';
+import { realm, seedDatabase } from './src/database';
 
 const Stack = createStackNavigator();
 
 declare var global: {HermesInternal: null | {}};
+
+seedDatabase();
 
 const App = () => {
   return (
     <RealmProvider initialRealm={realm}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
         </Stack.Navigator>
       </NavigationContainer>

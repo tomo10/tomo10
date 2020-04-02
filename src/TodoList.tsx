@@ -3,7 +3,7 @@ import React from 'react';
 import { FlatList, View, Text, Switch } from 'react-native';
 import { useRealmQuery, RealmContext } from 'react-use-realm';
 
-import { Filter, ITodo, IWorkspace } from './types';
+import { Filter, ITodo, IWorkspace, IDino } from './types';
 
 const filterQueries: Record<Filter, string | undefined> = {
     'all': undefined,
@@ -11,20 +11,13 @@ const filterQueries: Record<Filter, string | undefined> = {
     'not-done': 'doneAt = null'
 };
 
-function TodoItem({ todo }: { todo: ITodo }) {
+function TodoItem({ dino }: { dino: IDino }) {
+
     const { realm } = React.useContext(RealmContext);
 
-    function toggleTodo() {
-        if (realm) {
-            realm.write(() => {
-                todo.doneAt = todo.doneAt ? undefined : new Date();
-            });
-        }
-    }
 
     return <View style={{ flexDirection: 'row', alignItems: 'center', margin: 16 }}>
-        <Switch value={!!todo.doneAt} onValueChange={() => toggleTodo()} />
-        <Text style={{ flex: 1, marginLeft: 8 }}>{todo.title}</Text>
+        <Text style={{ flex: 1, marginLeft: 8 }}>{dino.name}</Text>
     </View>
 }
 

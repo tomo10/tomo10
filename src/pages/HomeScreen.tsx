@@ -1,12 +1,14 @@
 import React from 'react';
 import { Platform, Picker, StyleSheet, View, Text } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { useRealmQuery } from 'react-use-realm';
+import { useRealmQuery, RealmContext } from 'react-use-realm';
+import {NetworkInfo} from 'react-native-network-info';
 
-import { Filter, IWorkspace } from './../types';
-import { WorkspaceSchema } from './../database';
+import { Filter, IWorkspace, IDino } from './../types';
+import { DinoSchema } from '../realm';
 import TodosList from './../TodoList';
 import TodoForm from './../TodoForm';
+import realm from './../realm'
 
 const filterDisplayNames: Record<Filter, string> = {
     'all': 'All Tasks',
@@ -14,19 +16,15 @@ const filterDisplayNames: Record<Filter, string> = {
     'not-done': 'Incomplete Tasks'
 };
 
-const Workspace = ({ workspace, filter }: { workspace: IWorkspace, filter: Filter }) => (
-  <View style={styles.workspace}>
-    <Text style={styles.workspaceHeader}>{workspace.title}</Text>
-    <TodosList workspace={workspace} filter={filter} />
-    <TodoForm workspace={workspace} />
-  </View>
-  );
-
 export default function HomeScreen() {
     const [filter, setFilter] = React.useState<Filter>('all');
-    
-    const workspaces = useRealmQuery<IWorkspace>({
-        source: WorkspaceSchema.name
+
+    // Get Local IP
+
+
+    // let dinos = realm.objects('Dino');
+    const dinos = useRealmQuery<IDino>({
+        source: DinoSchema.name
     });
 
 
@@ -40,10 +38,21 @@ export default function HomeScreen() {
             onValueChange={value => setFilter(value)}>
             {Object.keys(filterDisplayNames).map(filter => <Picker.Item key={filter} value={filter} label={filterDisplayNames[filter as Filter]} />)}
           </Picker>}
-          <TodoForm  />
-        {workspaces ?
-            workspaces.map(w => <Workspace key={w.id} workspace={w} filter={filter} />) 
-            : <Text>No workspaces added yet</Text>}
+          <View style={styles.workspace}>
+            <TodoForm />
+            { dinos ?
+              dinos.map((dino, index) => {
+                console.log(dino)
+                return (
+                  <View style={{borderColor: 'black', borderWidth: 1}}>
+                    <Text style={{fontSize: 20, color: 'black'}}>{dino.name} {index}</Text>
+                  </View>
+
+                )               
+              }) 
+              : <Text style={{fontSize: 20, color: 'black'}} >No dinosaurs here</Text>
+            }
+          </View>
     </View>
 }
 

@@ -19,6 +19,11 @@ export interface IWorkspace {
   todos: Realm.Results<ITodo>
 }
 
+export interface IDino {
+  id: string;
+  name: string;
+}
+
 export interface ITodo {
   id: string;
   title: string;

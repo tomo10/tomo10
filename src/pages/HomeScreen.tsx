@@ -1,16 +1,19 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useRealmQuery, RealmContext } from 'react-use-realm';
-import {NetworkInfo} from 'react-native-network-info';
+import { NetworkInfo } from 'react-native-network-info';
 import { Filter, IDino, CalendarEvent } from './../types';
 import { CalendarEventSchema } from '../realm';
+import { StackNavigationProp } from '@react-navigation/stack';
+
 
 import TodoForm from './../TodoForm';
+import { MainParamList } from './../MainParamList';
 
 
 
-export default function HomeScreen() {
+const HomeScreen = ({navigation}: { navigation: StackNavigationProp<MainParamList, 'HomeScreen'> }) => {
     const [filter, setFilter] = React.useState<Filter>('all');
     const { realm } = React.useContext(RealmContext);
 
@@ -41,10 +44,10 @@ export default function HomeScreen() {
                 { events ?
                   events.map((event, index) => {
                     return (
-                      <View key={index} style={{borderColor: 'black', borderWidth: 1}}>
+                      <TouchableOpacity onPress={() => navigation.navigate('EventDetailsScreen', {event})} key={index} style={{borderColor: 'black', borderWidth: 1}}>
                         <Text style={{fontSize: 20, color: 'black'}}>{event.title}</Text>
                         <Text style={{fontSize: 16, color: 'black'}}>{event.startDate.toDateString()}</Text>
-                      </View>
+                      </TouchableOpacity>
                     )               
                   }) 
                   : <Text style={{fontSize: 20, color: 'black'}} >No dinosaurs here</Text>
@@ -53,7 +56,7 @@ export default function HomeScreen() {
           </View>
 };
 
-
+export default HomeScreen;
 
 const styles = StyleSheet.create({
     body: {

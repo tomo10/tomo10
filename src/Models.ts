@@ -37,41 +37,6 @@ export const event2: CalendarEvent = {
 }
 
 
-
-
-/*
-export interface Guest {
-  name: string;
-}
-
-export interface Event {
-  title: Scalars['String'];
-  startDate: Scalars['Date'];
-  notes?: Maybe<Scalars['String']>;
-  location?: Maybe<CalendarEventLocation>;
-  guests: Guest[];
-}
-
-const EventSchema = {
-  name: 'Event',
-}
-
-
-const event: Event = {
-  title: "Rave",
-  startDate: "Tomorrow",
-  notes: "Will be epic",
-  location: 
-  {
-    locationString: "Boom - Belgium"
-  },
-  guests: [
-      {name: "Thomas"},
-      {name: "Tim"}
-  ]
-}
-*/
-
 /*
 {
     "data": {

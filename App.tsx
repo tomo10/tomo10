@@ -16,6 +16,7 @@ import { RealmProvider } from "react-use-realm";
 import HomeScreen from './src/pages/HomeScreen';
 import EventDetailsScreen from './src/pages/EventDetailsScreen';
 import realm from './src/realm';
+import { Routes } from './src/Routes';
 
 const Stack = createStackNavigator();
 
@@ -23,15 +24,10 @@ const Stack = createStackNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
       <RealmProvider initialRealm={realm}>
-        <Stack.Navigator>
-          <Stack.Screen name="HomeScreen" component={HomeScreen} />
-          <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
-        </Stack.Navigator>
+        <Routes />
       </RealmProvider>
-    </NavigationContainer>
-  );
+    );
 };
 
 

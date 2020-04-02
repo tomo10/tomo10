@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { useRealmQuery } from 'react-use-realm';
+import { useRealmQuery, RealmContext } from 'react-use-realm';
 import {NetworkInfo} from 'react-native-network-info';
-import { Filter, IDino } from './../types';
-import { DinoSchema } from '../realm';
+import { Filter, IDino, CalendarEvent } from './../types';
+import { CalendarEventSchema } from '../realm';
 
 import TodoForm from './../TodoForm';
 
@@ -12,24 +12,38 @@ import TodoForm from './../TodoForm';
 
 export default function HomeScreen() {
     const [filter, setFilter] = React.useState<Filter>('all');
+    const { realm } = React.useContext(RealmContext);
 
-    // Get Local IP
+    useEffect(() => {
+      console.log('home screen renders')
+      // realmStatus()
+    })
 
-
-    // let dinos = realm.objects('Dino');
-    const dinos = useRealmQuery<IDino>({
-        source: DinoSchema.name
+    const events = useRealmQuery<CalendarEvent>({
+        source: CalendarEventSchema.name
     });
+
+
+    const realmStatus = () => {
+      try {
+        // Realm.deleteFile({ schema: [ DinoSchema ] })
+        console.log('realm status:', realm?.schema)
+      } catch (e) {
+        console.log('error:', e)
+      }
+    }
+
 
 
     return <View style={styles.body}>
               <View style={styles.workspace}>
                 <TodoForm />
-                { dinos ?
-                  dinos.map((dino, index) => {
+                { events ?
+                  events.map((event, index) => {
                     return (
-                      <View style={{borderColor: 'black', borderWidth: 1}}>
-                        <Text style={{fontSize: 20, color: 'black'}}>{dino.name} {index}</Text>
+                      <View key={index} style={{borderColor: 'black', borderWidth: 1}}>
+                        <Text style={{fontSize: 20, color: 'black'}}>{event.title}</Text>
+                        <Text style={{fontSize: 16, color: 'black'}}>{event.startDate.toDateString()}</Text>
                       </View>
                     )               
                   }) 

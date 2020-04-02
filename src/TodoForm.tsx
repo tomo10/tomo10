@@ -1,25 +1,21 @@
 import React from 'react';
 import { View, TextInput, Button } from 'react-native';
-import cuid from 'cuid';
 import { RealmContext } from 'react-use-realm';
-import { DinoSchema } from './realm';
-// import realm from './realm';
+import { event2 } from './Models';
+import { CalendarEventSchema } from './realm';
 
 export default function TodoForm () {
     const [name, setName] = React.useState('');
-
     const { realm } = React.useContext(RealmContext);
+
+
 
     function addTodo() {
         if (realm) {
             try {
                 realm.write(() => {
-                    const dino = {
-                        id: cuid(),
-                        name
-                    };
-                    realm.create(DinoSchema.name, dino);
-                    console.log('dino:', dino)
+                    realm.create(CalendarEventSchema.name, event2);
+                    console.log('event:', event2)
                 });
                 setName('');
             } catch (e) {

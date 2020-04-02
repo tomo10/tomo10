@@ -1,53 +1,38 @@
-import { CalendarEvent, CalendarEventStatus, Scalars, Maybe, CalendarEventLocation } from './types'
-
-
-export const ThomasSchema = {
-  name: 'ThomasObject', 
-  properties: {
-    name: 'string'
-  }
-}
-
-// export const ThomasObject = {
-//   name: 'Alexander Hamilton'
-// }
-
-export const CalendarDetailsSchema = {
-  name: 'CalendarEventDetails',
-  primaryKey: 'id',
-  properties: {
-    id: 'string',
-    title: 'string',
-    startDate: 'date',
-    startTimeZone: {
-      timezone: 'string'
-    },
-    endDate: 'date',
-    endTimeZone: {
-      timezone: 'string'
-    },
-    allDay: 'bool',
-    location: {locationString: 'string'},
-    notes: 'string',
-    status: 'string'
-  }
-}
+import { CalendarEvent } from './types'
+import cuid from 'cuid';
 
 
 export const event: CalendarEvent = {
   id: "5dcc1dc477812f790f696bc7",
   title: "Cortina Skiing",
-  startDate: 1588100400000,
+  startDate: new Date(1588100400000),
   startTimeZone: {
     timezone: "UK/London"
   },
-  endDate: 1588114800000,
+  endDate: new Date(1588114800000),
   endTimeZone: {
     timezone: "UK/London"
   },
   allDay: false,
   location: {locationString: "Greenleaf Chalet"},
   notes: "Bring warm clothes",
+  status: "DEFAULT"
+}
+
+export const event2: CalendarEvent = {
+  id: cuid(),
+  title: "Wine Tasting",
+  startDate: new Date(1590000400000),
+  startTimeZone: {
+    timezone: "UK/London"
+  },
+  endDate: new Date(1590314800000),
+  endTimeZone: {
+    timezone: "UK/London"
+  },
+  allDay: false,
+  location: {locationString: "Berry Bros"},
+  notes: "New Zealand Pinot Noir night",
   status: "DEFAULT"
 }
 

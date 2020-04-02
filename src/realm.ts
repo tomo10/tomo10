@@ -1,38 +1,46 @@
-import Realm from 'realm';
+import Realm, { ObjectClass, ObjectSchema } from 'realm';
 
 
-export const WorkspaceSchema: Realm.ObjectSchema = {
-  name: 'Workspace',
+export const CalendarEventSchema: Realm.ObjectSchema = {
+  name: 'CalendarEvent',
   primaryKey: 'id',
   properties: {
     id: 'string',
     title: 'string',
-    todos: { type: 'linkingObjects', objectType: 'Todo', property: 'workspace' }
-  }
-}
-
-export const TodoSchema: Realm.ObjectSchema = {
-  name: 'Todo',
-  primaryKey: 'id',
-  properties: {
-    id: 'string',
-    title: 'string',
-    doneAt: { type: 'date', optional: true },
-    workspace: 'Workspace'
-  }
+    startDate: 'date',
+    startTimeZone: 'TimeZone',
+    endDate: 'date',
+    endTimeZone: 'TimeZone',
+    allDay: 'bool',
+    location: 'CalendarEventLocation',
+    notes: 'string?',
+    status: { type: 'string', indexed: true },
+  },
 };
 
-export const DinoSchema: Realm.ObjectSchema = {
-  name: 'Dino',
-  primaryKey: 'id',
+const TimeZoneSchema: Realm.ObjectSchema = {
+  name: 'TimeZone',
   properties: {
-    id: 'string',
-    name: 'string'
-  }
-}
+    timezone: 'string',
+  },
+};
 
-export const schemas = [WorkspaceSchema, TodoSchema, DinoSchema];
+const CalendarEventLocationSchema: Realm.ObjectSchema = {
+  name: 'CalendarEventLocation',
+  properties: {
+    locationString: 'string',
+  },
+};
 
-export default new Realm({ schema: schemas, deleteRealmIfMigrationNeeded: true });
+
+const SchemaArray: (ObjectClass | ObjectSchema)[] = [
+  CalendarEventSchema,
+  CalendarEventLocationSchema,
+  TimeZoneSchema
+]
+
+
+
+export default new Realm({ schema: SchemaArray, deleteRealmIfMigrationNeeded: true });
 
 

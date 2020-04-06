@@ -28,6 +28,7 @@ const AppStackScreen = () => (
       <AppStack.Screen 
         name="EventDetailsScreen" 
         options={({route}) => ({
+            headerTitle: route.params.event.title,
             headerShown: true,
             headerStyle: {
                 backgroundColor: 'black',

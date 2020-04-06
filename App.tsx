@@ -9,17 +9,9 @@
  */
 // import 'react-native-gesture-handler';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { RealmProvider } from "react-use-realm";
-
-import HomeScreen from './src/pages/HomeScreen';
-import EventDetailsScreen from './src/pages/EventDetailsScreen';
 import realm from './src/realm';
 import { Routes } from './src/Routes';
-
-const Stack = createStackNavigator();
-
 
 
 const App = () => {

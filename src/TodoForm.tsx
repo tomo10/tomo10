@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TextInput, Button } from 'react-native';
 import { RealmContext } from 'react-use-realm';
-import { event2 } from './Models';
+import { event2, event3, event5 } from './Models';
 import { CalendarEventSchema } from './realm';
 
 export default function TodoForm () {
@@ -14,8 +14,8 @@ export default function TodoForm () {
         if (realm) {
             try {
                 realm.write(() => {
-                    realm.create(CalendarEventSchema.name, event2);
-                    console.log('event:', event2)
+                    realm.create(CalendarEventSchema.name, event5);
+                    console.log('event:', event5)
                 });
                 setName('');
             } catch (e) {

@@ -36,6 +36,56 @@ export const event2: CalendarEvent = {
   status: "DEFAULT"
 }
 
+export const event3: CalendarEvent = {
+  id: cuid(),
+  title: "Avicii Concert",
+  startDate: new Date(2020, 4, 20, 19),
+  startTimeZone: {
+    timezone: "UK/London"
+  },
+  endDate: new Date(2020, 4, 20, 23),
+  endTimeZone: {
+    timezone: "UK/London"
+  },
+  allDay: false,
+  location: {locationString: "O2"},
+  notes: "Tribute night",
+  status: "DEFAULT"
+}
+
+export const event4: CalendarEvent = {
+  id: cuid(),
+  title: "Some gala",
+  startDate: new Date(2020, 3, 20, 19),
+  startTimeZone: {
+    timezone: "UK/London"
+  },
+  endDate: new Date(2020, 3, 20, 19),
+  endTimeZone: {
+    timezone: "UK/London"
+  },
+  allDay: false,
+  location: {locationString: "Annabel's"},
+  notes: "Black tie",
+  status: "DEFAULT"
+}
+export const event5: CalendarEvent = {
+  id: cuid(),
+  title: "Start Wars Opening",
+  startDate: new Date(2020, 4, 4, 19),
+  startTimeZone: {
+    timezone: "UK/London"
+  },
+  endDate: new Date(2020, 4, 4, 21),
+  endTimeZone: {
+    timezone: "UK/London"
+  },
+  allDay: false,
+  location: {locationString: "Odeon LS"},
+  notes: "May the 4th be with you",
+  status: "DEFAULT"
+}
+
 
 /*
 {

@@ -6,10 +6,11 @@ import MonthToDisplay from './MonthToDisplay';
 const monthArray = [1,2,3,4,5,6,7,8,9,10,11,12]
 const unix = Date.now();
 
-const listItem = ( item: number, index: number ) => {    
-    console.log(months[item]);
-    return <MonthToDisplay />
-};
+const listItem = ( item: number, index: number ) => (    
+     <MonthToDisplay 
+        
+     />
+);
 
 
 export default () => {

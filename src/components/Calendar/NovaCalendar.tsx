@@ -1,28 +1,61 @@
-import * as React from 'react';
-import { Text, View, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { RealmContext, useRealmQuery } from 'react-use-realm';
 import { MONTH_HEIGHT, months } from './CalendarModel';
 import MonthToDisplay from './MonthToDisplay';
-const monthArray = [1,2,3,4,5,6,7,8,9,10,11,12]
 const unix = Date.now();
 
-const listItem = ( item: number, index: number ) => (    
-     <MonthToDisplay 
-        
-     />
-);
 
 
 export default () => {
 
-    const { realm } = React.useContext(RealmContext);
-    // let events = realm?.objects('CalendarEvent').filtered('startDate > 2020-5-1@00:00:00:000');
-    let events = useRealmQuery({
-        source: 'CalendarEvent',
-        filter: 'startDate > 2020-5-1@00:00:00:000'
-    });
+    const [month_data_array, set_month_data_array] = useState<Array<{}>>();
+    const [current_month_index, set_current_month_index] = useState<number>();
+
+    useEffect(() => {
+        initializeMonths();
     
-    console.log('-----------------')
+    }, [])
+
+    let temp_month_data_array = [];
+    const numberOfMonths = 1;
+
+    const chooseDifferentMonth = (index: number) => {
+        if (index !== current_month_index) set_current_month_index(index) 
+    }
+
+    const listItem = (index: number, item: {}) => (    
+        <MonthToDisplay 
+          month_data={item}
+          month_index={index}
+          chooseDifferentMonth={chooseDifferentMonth}  
+        />
+   );
+
+    const initializeMonths = () => {
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        getFollowingMonths(currentMonth, currentYear, numberOfMonths);
+    }
+    
+    const getFollowingMonths = (currentMonth: number, currentYear: number, numberOfMonths: number) => {
+        if (numberOfMonths === 0) {
+            set_month_data_array(temp_month_data_array)
+            return;
+        } 
+        temp_month_data_array.push({ month: currentMonth, year: currentYear });
+        
+        if (currentMonth === 11) currentMonth = 0, currentYear +=1;
+        else {currentMonth += 1};
+
+        numberOfMonths -= 1;
+
+        getFollowingMonths(currentMonth, currentYear, numberOfMonths);
+    }
+
+    let events = useRealmQuery({ source: 'CalendarEvent', filter: 'startDate > 2020-3-1@00:00:00:000' });
+    
     return (
         <>
         <View>
@@ -30,17 +63,20 @@ export default () => {
         </View>
         <View style={{height: MONTH_HEIGHT}}>
             <FlatList 
-                data={monthArray}
-                renderItem={({item, index}) => listItem(item, index)}
+                data={month_data_array}
+                renderItem={({item, index}) => listItem(index, item)}
                 decelerationRate={'fast'}
                 snapToAlignment={'start'}
                 snapToInterval={MONTH_HEIGHT}
-                initialScrollIndex={new Date().getMonth()}
+                // initialScrollIndex={new Date().getMonth()}
                 initialNumToRender={1}
-                windowSize={3}
+                windowSize={10}
                 pagingEnabled={true}
             />
         </View>
+        <TouchableOpacity style={{padding: 10}} onPress={() => console.log(month_data_array)}>
+            <Text style={{fontSize: 25}}>REVEAL</Text>
+        </TouchableOpacity>
         {
             events?.map(event => (
                 <Text>{event.title}</Text>
